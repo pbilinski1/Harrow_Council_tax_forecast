@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harrow Council Tax Forecaster 2025-26</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1F4E78 0%, #2a5fa0 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+        
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            overflow-x: hidden;
+        }
+        
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+        
+        .section {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .section h2 {
+            color: #1F4E78;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            word-wrap: break-word;
+        }
+        
+        .section h3 {
+            color: #333;
+            font-size: 14px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .driver-group {
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+        
+        .driver-label {
+            font-weight: bold;
+            color: #1F4E78;
+            font-size: 13px;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+        
+        .driver-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            font-style: italic;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .input-row label {
+            min-width: 160px;
+            font-size: 13px;
+            color: #333;
+            word-wrap: break-word;
+        }
+        
+        .input-row input[type="range"] {
+            flex: 1;
+            min-width: 80px;
+            max-width: 150px;
+        }
+        
+        .input-row input[type="number"] {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .input-row .value-display {
+            min-width: 100px;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 12px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
+        .results-section {
+            grid-column: 1 / -1;
+        }
+        
+        .result-box {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+        
+        .result-box h3 {
+            color: #1F4E78;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+            word-wrap: break-word;
+        }
+        
+        .result-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .comparison-item {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+            word-wrap: break-word;
+        }
+        
+        .comparison-item .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+        
+        .comparison-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1F4E78;
+            word-wrap: break-word;
+        }
+        
+        .growth-indicator {
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #e8f4f8;
+            border-left: 3px solid #00a8e8;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .growth-indicator.positive {
+            background: #e8f4e8;
+            border-left-color: #4caf50;
+        }
+        
+        .growth-indicator.warning {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+        
+        .growth-indicator.concern {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .sensitivity-section {
+            grid-column: 1 / -1;
+        }
+        
+        .sensitivity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .sensitivity-table th {
+            background: #1F4E78;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+        
+        .sensitivity-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            word-wrap: break-word;
+        }
+        
+        .sensitivity-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .sensitivity-table tr:hover {
+            background: #f0f0f0;
+        }
+        
+        .scenario-label {
+            font-weight: bold;
+            color: #1F4E78;
+            word-wrap: break-word;
+        }
+        
+        .scenario-value {
+            color: #667eea;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            grid-column: 1 / -1;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-reset {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-export {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-export:hover {
+            background: #45a049;
+        }
+        
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            grid-column: 1 / -1;
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1565c0;
+            margin-bottom: 15px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        
+        .metric-highlight {
+            background: #fff9c4;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 8px 0;
+            border-left: 3px solid #fbc02d;
+            font-size: 12px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ HARROW COUNCIL TAX INCOME FORECASTER 2025-26</h1>
+            <p><strong>Base Year 2024-25:</strong> £162.208m | <strong>Collection Rate:</strong> 96.49% | <strong>Target:</strong> 97.00%</p>
+            <p style="font-size: 12px; margin-top: 10px;">Interactive forecasting model using identified drivers from audited accounts analysis</p>
+        </div>
+        
+        <div class="content">
+            <!-- LEFT COLUMN: DRIVERS INPUT -->
+            <div>
+                <div class="section">
+                    <h2>📊 COUNCIL TAX DRIVERS</h2>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Adjust each driver to forecast 2025-26 Council Tax Income</p>
+                    
+                    <!-- Driver 1: Rate Increase -->
+                    <div class="driver-group">
+                        <div class="driver-label">1️⃣ COUNCIL TAX RATE INCREASE</div>
+                        <div class="driver-desc">Authorization: Up to 4.99% (2.99% base + 2.0% Adult Social Care precept)</div>
+                        <div class="input-row">
+                            <label>Rate Increase (%):</label>
+                            <input type="range" id="rateSlider" min="0" max="5" step="0.1" value="3.5">
+                            <input type="number" id="rateInput" min="0" max="5" step="0.1" value="3.5">
+                            <div class="value-display" id="rateImpact">Impact: Loading...</div>
+                        </div>
+                        <div class="metric-highlight">
+                            <strong>Historical Context:</strong> 2023-24 (4.99%), 2024-25 (4.99%) | Average impact: ~£1.6m per 1% increase
+                        </div>
+                    </div>
+                    
+                    <!-- Driver 2: Tax Base Growth -->
+                    <div class="driver-group">
+                        <div class="driver-label">2️⃣ TAX BASE GROWTH</div>
+                        <div class="driver-desc">New properties: Grange Farm (89 homes completed 2023-24), Byron Quarter, Poets Corner ongoing</div>
+                        <div class="input-row">
+                            <label>Annual Base Growth (%):</label>
+                            <input type="range" id="baseSlider" min="0" max="2" step="0.1" value="0.5">
+                            <input type="number" id="baseInput" min="0" max="2" step="0.1" value="0.5">
+                            <div class="value-display" id="baseImpact">Impact: Loading...</div>
+                        </div>
+                        <div class="metric-highlight">
+                            <strong>Historical Context:</strong> Annual growth 0.4-0.6% | Impact: ~£0.7m per 0.1% growth
+                        </div>
+                    </div>
+                    
+                    <!-- Driver 3: Collection Rate -->
+                    <div class="driver-group">
+                        <div class="driver-label">3️⃣ COLLECTION RATE PERFORMANCE</div>
+                        <div class="driver-desc">2024-25: 96.49% (Below 97% target). Driver: Cost of living crisis (energy ↑50-100%, food ↑15-20%, interest rates 4.25%)</div>
+                        <div class="input-row">
+                            <label>Forecast Collection Rate (%):</label>
+                            <input type="range" id="collectionSlider" min="90" max="99" step="0.1" value="96.5">
+                            <input type="number" id="collectionInput" min="90" max="99" step="0.1" value="96.5">
+                            <div class="value-display" id="collectionImpact">Impact: Loading...</div>
+                        </div>
+                        <div class="metric-highlight">
+                            <strong>Historical Performance:</strong> 2021-22: 98.72% | 2022-23: 96.63% | 2024-25: 96.49% | Decline: -2.23pp from peak
+                        </div>
+                    </div>
+                    
+                    <div class="info-box">
+                        <strong>💡 Forecast Logic:</strong> Each driver is applied multiplicatively: Base × (1 + Rate Increase) × (1 + Base Growth) × Collection Rate
+                    </div>
+                </div>
+            </div>
+            
+            <!-- RIGHT COLUMN: INFLATION & RESULTS -->
+            <div>
+                <div class="section">
+                    <h2>💷 INFLATION-ADJUSTED ANALYSIS</h2>
+                    <div class="driver-desc" style="margin-bottom: 15px;">Discounts Base Case forecast by inflation to show real purchasing power in constant 2024-25 £</div>
+                    
+                    <div class="driver-group">
+                        <div class="driver-label">4️⃣ INFLATION ADJUSTMENT (Real Terms Discount)</div>
+                        <div class="driver-desc">Expected inflation for 2025-26. Forecast is discounted by this rate: Real Value = Nominal / (1 + Inflation) to show purchasing power in today's money</div>
+                        <div class="input-row">
+                            <label>Expected Inflation 2025-26 (%):</label>
+                            <input type="range" id="inflationSlider" min="0" max="10" step="0.1" value="2.5">
+                            <input type="number" id="inflationInput" min="0" max="10" step="0.1" value="2.5">
+                            <div class="value-display" id="inflationImpact">Impact: Loading...</div>
+                        </div>
+                        <div class="metric-highlight">
+                            <strong>Context:</strong> 2023-24 inflation: 8-10% | 2024-25: 3-4% | Expected 2025-26: 2-3% (moderating)<br>
+                            <strong>Real Terms Discount:</strong> Shows income value in 2024-25 pounds (constant purchasing power)
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="section results-section">
+                    <h2>📈 2025-26 FORECAST RESULTS</h2>
+                    
+                    <div class="result-box">
+                        <h3>Base Case Forecast (Nominal Terms - Current £ with Inflation)</h3>
+                        <div class="result-value" id="resultBase">£162.208m</div>
+                        <div class="result-description">
+                            <div id="resultBaseBreakdown">Calculating...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <h3>Inflation-Adjusted Forecast (Real Terms - Constant 2024-25 £)</h3>
+                        <div class="result-value" id="resultInflation">£162.208m</div>
+                        <div class="result-description">
+                            <div id="resultInflationBreakdown">Calculating...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <h3>Comparison with 2024-25 (£162.208m)</h3>
+                        <div class="comparison">
+                            <div class="comparison-item">
+                                <div class="label">Nominal Change (with inflation)</div>
+                                <div class="value" id="baseChange">+£0.000m</div>
+                                <div class="label" style="margin-top: 5px;" id="baseChangePct">+0.00%</div>
+                            </div>
+                            <div class="comparison-item">
+                                <div class="label">Real Terms Change (constant £)</div>
+                                <div class="value" id="inflationChange">+£0.000m</div>
+                                <div class="label" style="margin-top: 5px;" id="inflationChangePct">+0.00%</div>
+                            </div>
+                        </div>
+                        
+                        <div id="growthIndicator" class="growth-indicator" style="margin-top: 15px;">
+                            Calculating...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sensitivity Analysis -->
+            <div class="sensitivity-section">
+                <div class="section">
+                    <h2>🎯 SENSITIVITY ANALYSIS</h2>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">See how variations in key assumptions affect the forecast</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3>Collection Rate Sensitivity (holding other factors constant)</h3>
+                        <table class="sensitivity-table">
+                            <thead>
+                                <tr>
+                                    <th>Collection Rate</th>
+                                    <th>2025-26 Forecast</th>
+                                    <th>Change from 2024-25</th>
+                                    <th>Growth %</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="collectionSensitivity">
+                                <tr><td colspan="5">Calculating...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3>Rate Increase Sensitivity (holding other factors constant)</h3>
+                        <table class="sensitivity-table">
+                            <thead>
+                                <tr>
+                                    <th>Rate Increase</th>
+                                    <th>2025-26 Forecast</th>
+                                    <th>Change from 2024-25</th>
+                                    <th>Growth %</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rateSensitivity">
+                                <tr><td colspan="5">Calculating...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <h3>Worst Case vs Best Case Scenarios</h3>
+                        <table class="sensitivity-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Assumptions</th>
+                                    <th>2025-26 Forecast</th>
+                                    <th>Change</th>
+                                </tr>
+                            </thead>
+                            <tbody id="worstBestCase">
+                                <tr><td colspan="4">Calculating...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn-calculate" onclick="calculateForecast()">📊 Calculate Forecast</button>
+                <button class="btn-reset" onclick="resetDefaults()">🔄 Reset to Defaults</button>
+                <button class="btn-export" onclick="exportResults()">📥 Download Results as CSV</button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p><strong>Data Source:</strong> Audited Statement of Accounts 2021-22 to 2024-25 | <strong>Analysis Date:</strong> March 2026</p>
+                <p><strong>Confidence Level:</strong> High (based on audited figures and identified driver mechanisms) | <strong>Caveats:</strong> Government policy, economic conditions, and revaluation outcomes may differ from assumptions</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const CT_2024_25 = 162.208;  // £m
+        const CT_COLLECTION_2024_25 = 96.49;  // %
+        const CT_COLLECTION_TARGET = 97.00;  // %
+        
+        // Sync range and number inputs
+        document.getElementById('rateSlider').addEventListener('input', function() {
+            document.getElementById('rateInput').value = this.value;
+            calculateForecast();
+        });
+        document.getElementById('rateInput').addEventListener('input', function() {
+            document.getElementById('rateSlider').value = this.value;
+            calculateForecast();
+        });
+        
+        document.getElementById('baseSlider').addEventListener('input', function() {
+            document.getElementById('baseInput').value = this.value;
+            calculateForecast();
+        });
+        document.getElementById('baseInput').addEventListener('input', function() {
+            document.getElementById('baseSlider').value = this.value;
+            calculateForecast();
+        });
+        
+        document.getElementById('collectionSlider').addEventListener('input', function() {
+            document.getElementById('collectionInput').value = this.value;
+            calculateForecast();
+        });
+        document.getElementById('collectionInput').addEventListener('input', function() {
+            document.getElementById('collectionSlider').value = this.value;
+            calculateForecast();
+        });
+        
+        document.getElementById('inflationSlider').addEventListener('input', function() {
+            document.getElementById('inflationInput').value = this.value;
+            calculateForecast();
+        });
+        document.getElementById('inflationInput').addEventListener('input', function() {
+            document.getElementById('inflationSlider').value = this.value;
+            calculateForecast();
+        });
+        
+        function calculateForecast() {
+            // Get inputs
+            const rateIncrease = parseFloat(document.getElementById('rateInput').value) / 100;
+            const baseGrowth = parseFloat(document.getElementById('baseInput').value) / 100;
+            const collectionRate = parseFloat(document.getElementById('collectionInput').value) / 100;
+            const inflationRate = parseFloat(document.getElementById('inflationInput').value) / 100;
+            
+            // ===== BASE CASE FORECAST (NOMINAL TERMS) =====
+            
+            // Reconstruct 2024-25 demand (before collection adjustment)
+            const ctDemand2024_25 = CT_2024_25 / (CT_COLLECTION_2024_25 / 100);
+            
+            // Apply rate increase and base growth
+            const ctDemand2025_26 = ctDemand2024_25 * (1 + rateIncrease) * (1 + baseGrowth);
+            
+            // Apply collection rate
+            const ctIncomeBase = ctDemand2025_26 * collectionRate;
+            
+            // Calculate impacts
+            const rateImpact = CT_2024_25 * rateIncrease;
+            const baseImpact = CT_2024_25 * baseGrowth;
+            
+            const collectionAtTarget = ctDemand2024_25 * (CT_COLLECTION_TARGET / 100);
+            const collectionImpact = collectionAtTarget - CT_2024_25;
+            
+            // ===== INFLATION-ADJUSTED FORECAST (REAL TERMS - DISCOUNTED) =====
+            // Discount the Base Case forecast by inflation to show real purchasing power
+            // Real Value = Nominal Value / (1 + Inflation Rate)
+            const ctIncomeRealTerms = ctIncomeBase / (1 + inflationRate);
+            
+            // Calculate the erosion in purchasing power due to inflation
+            const inflationErosion = ctIncomeBase - ctIncomeRealTerms;
+            
+            // ===== UPDATE DISPLAYS =====
+            
+            // Impact labels
+            document.getElementById('rateImpact').textContent = `Impact: +£${rateImpact.toFixed(3)}m (+${(rateIncrease*100).toFixed(2)}%)`;
+            document.getElementById('baseImpact').textContent = `Impact: +£${baseImpact.toFixed(3)}m (+${(baseGrowth*100).toFixed(2)}%)`;
+            document.getElementById('collectionImpact').textContent = `Impact: +£${collectionImpact.toFixed(3)}m (if improved to ${CT_COLLECTION_TARGET}% vs actual ${CT_COLLECTION_2024_25}%)`;
+            document.getElementById('inflationImpact').textContent = `Real Terms Discount: -£${inflationErosion.toFixed(3)}m (${(inflationRate*100).toFixed(2)}% inflation erosion of purchasing power)`;
+            
+            // Forecast results
+            document.getElementById('resultBase').textContent = `£${ctIncomeBase.toFixed(3)}m`;
+            document.getElementById('resultBaseBreakdown').innerHTML = 
+                `Rate: ${(rateIncrease*100).toFixed(2)}% (${rateImpact.toFixed(3)}m) | Base Growth: ${(baseGrowth*100).toFixed(2)}% (${baseImpact.toFixed(3)}m) | Collection: ${(collectionRate*100).toFixed(2)}% | <strong>NOMINAL Terms (Actual £ with inflation)</strong>`;
+            
+            document.getElementById('resultInflation').textContent = `£${ctIncomeRealTerms.toFixed(3)}m`;
+            document.getElementById('resultInflationBreakdown').innerHTML = 
+                `<strong>REAL Terms (Inflation-Discounted £)</strong>: Base Case divided by (1 + ${(inflationRate*100).toFixed(2)}% inflation) | Purchasing Power: £${ctIncomeRealTerms.toFixed(3)}m | Erosion: -£${inflationErosion.toFixed(3)}m`;
+            
+            // Changes
+            const baseChange = ctIncomeBase - CT_2024_25;
+            const baseChangePct = (ctIncomeBase / CT_2024_25 - 1) * 100;
+            const realTermsChange = ctIncomeRealTerms - CT_2024_25;
+            const realTermsChangePct = (ctIncomeRealTerms / CT_2024_25 - 1) * 100;
+            
+            document.getElementById('baseChange').textContent = `+£${baseChange.toFixed(3)}m`;
+            document.getElementById('baseChangePct').textContent = `+${baseChangePct.toFixed(2)}%`;
+            document.getElementById('inflationChange').textContent = `+£${realTermsChange.toFixed(3)}m`;
+            document.getElementById('inflationChangePct').textContent = `+${realTermsChangePct.toFixed(2)}%`;
+            
+            // Growth indicator
+            let growthHTML = '';
+            if (baseChangePct >= 5.0) {
+                growthHTML = `<strong style="color: #4caf50;">✓ Nominal growth (${baseChangePct.toFixed(2)}%) MEETS historical average (+5.1%)</strong><br>`;
+                growthHTML += `<span style="font-size: 12px;">Real terms growth: ${realTermsChangePct.toFixed(2)}% (after discounting ${(inflationRate*100).toFixed(2)}% inflation)</span>`;
+            } else {
+                const shortfall = 5.1 - baseChangePct;
+                growthHTML = `<strong style="color: #ff9800;">⚠ Nominal growth (${baseChangePct.toFixed(2)}%) BELOW historical (+5.1%) by ${shortfall.toFixed(2)}pp</strong><br>`;
+                growthHTML += `<span style="font-size: 12px;">Real terms growth: ${realTermsChangePct.toFixed(2)}% (after discounting ${(inflationRate*100).toFixed(2)}% inflation)</span>`;
+            }
+            
+            if (ctIncomeBase < CT_2024_25) {
+                growthHTML = `<strong style="color: #f44336;">❌ Nominal forecast (${baseChangePct.toFixed(2)}%) is NEGATIVE - decline from 2024-25</strong><br>`;
+                growthHTML += `<span style="font-size: 12px;">Real terms: ${realTermsChangePct.toFixed(2)}% (after discounting ${(inflationRate*100).toFixed(2)}% inflation)</span>`;
+            }
+            
+            document.getElementById('growthIndicator').innerHTML = growthHTML;
+            document.getElementById('growthIndicator').className = baseChangePct < 0 ? 'growth-indicator concern' : (baseChangePct < 5 ? 'growth-indicator warning' : 'growth-indicator positive');
+            
+            // Update sensitivity tables
+            updateSensitivityTables(ctDemand2025_26, collectionRate, rateIncrease, baseGrowth);
+        }
+        
+        function updateSensitivityTables(ctDemand, baseCollection, rateInc, baseGr) {
+            // Collection rate sensitivity
+            const collectionRates = [95.0, 96.0, 96.5, 97.0, 98.0];
+            let collectionHTML = '';
+            collectionRates.forEach(cr => {
+                const income = ctDemand * (cr / 100);
+                const change = income - CT_2024_25;
+                const pct = (change / CT_2024_25 * 100).toFixed(2);
+                let status = '';
+                if (cr === 97.0) status = '<span class="scenario-label">✓ TARGET</span>';
+                else if (cr === 96.5) status = '<span class="scenario-label">⚠ CURRENT</span>';
+                
+                collectionHTML += `<tr>
+                    <td class="scenario-label">${cr.toFixed(1)}%</td>
+                    <td class="scenario-value">£${income.toFixed(3)}m</td>
+                    <td class="scenario-value">+£${change.toFixed(3)}m</td>
+                    <td class="scenario-value">+${pct}%</td>
+                    <td>${status}</td>
+                </tr>`;
+            });
+            document.getElementById('collectionSensitivity').innerHTML = collectionHTML;
+            
+            // Rate increase sensitivity
+            const demandBase = ctDemand / (1 + baseGr);
+            const rateIncreases = [0.0, 2.0, 3.5, 4.99, 5.0];
+            let rateHTML = '';
+            rateIncreases.forEach(ri => {
+                const demand = demandBase * (1 + baseGr) * (1 + ri/100);
+                const income = demand * baseCollection;
+                const change = income - CT_2024_25;
+                const pct = (change / CT_2024_25 * 100).toFixed(2);
+                let status = '';
+                if (ri === 3.5) status = '<span class="scenario-label">✓ ASSUMED</span>';
+                else if (ri === 4.99) status = '<span class="scenario-label">⚠ MAXIMUM</span>';
+                
+                rateHTML += `<tr>
+                    <td class="scenario-label">${ri.toFixed(2)}%</td>
+                    <td class="scenario-value">£${income.toFixed(3)}m</td>
+                    <td class="scenario-value">+£${change.toFixed(3)}m</td>
+                    <td class="scenario-value">+${pct}%</td>
+                    <td>${status}</td>
+                </tr>`;
+            });
+            document.getElementById('rateSensitivity').innerHTML = rateHTML;
+            
+            // Worst/Best case
+            const demandWorst = demandBase * (1 + 0.02) * (1 + 0.001);
+            const incomeWorst = demandWorst * 0.955;
+            const changeWorst = incomeWorst - CT_2024_25;
+            
+            const demandBest = demandBase * (1 + 0.04) * (1 + 0.010);
+            const incomeBest = demandBest * 0.975;
+            const changeBest = incomeBest - CT_2024_25;
+            
+            let worstBestHTML = `
+                <tr>
+                    <td class="scenario-label">WORST CASE</td>
+                    <td style="font-size: 12px;">2% rate, 0.1% base, 95.5% collection</td>
+                    <td class="scenario-value">£${incomeWorst.toFixed(3)}m</td>
+                    <td class="scenario-value">+£${changeWorst.toFixed(3)}m (+${((changeWorst/CT_2024_25)*100).toFixed(2)}%)</td>
+                </tr>
+                <tr>
+                    <td class="scenario-label">BEST CASE</td>
+                    <td style="font-size: 12px;">4% rate, 1% base, 97.5% collection</td>
+                    <td class="scenario-value">£${incomeBest.toFixed(3)}m</td>
+                    <td class="scenario-value">+£${changeBest.toFixed(3)}m (+${((changeBest/CT_2024_25)*100).toFixed(2)}%)</td>
+                </tr>
+            `;
+            document.getElementById('worstBestCase').innerHTML = worstBestHTML;
+        }
+        
+        function resetDefaults() {
+            document.getElementById('rateInput').value = '3.5';
+            document.getElementById('rateSlider').value = '3.5';
+            document.getElementById('baseInput').value = '0.5';
+            document.getElementById('baseSlider').value = '0.5';
+            document.getElementById('collectionInput').value = '96.5';
+            document.getElementById('collectionSlider').value = '96.5';
+            document.getElementById('inflationInput').value = '2.5';
+            document.getElementById('inflationSlider').value = '2.5';
+            calculateForecast();
+        }
+        
+        function exportResults() {
+            const rate = parseFloat(document.getElementById('rateInput').value);
+            const base = parseFloat(document.getElementById('baseInput').value);
+            const collection = parseFloat(document.getElementById('collectionInput').value);
+            const inflation = parseFloat(document.getElementById('inflationInput').value);
+            
+            const rateIncrease = rate / 100;
+            const baseGrowth = base / 100;
+            const collectionRate = collection / 100;
+            const inflationRate = inflation / 100;
+            
+            const ctDemand2024_25 = CT_2024_25 / (CT_COLLECTION_2024_25 / 100);
+            const ctDemand2025_26 = ctDemand2024_25 * (1 + rateIncrease) * (1 + baseGrowth);
+            const ctIncomeBase = ctDemand2025_26 * collectionRate;
+            
+            const ctDemandInflated = ctDemand2024_25 * (1 + inflationRate);
+            const ctDemandInflated2025_26 = ctDemandInflated * (1 + rateIncrease) * (1 + baseGrowth);
+            const ctIncomeInflation = ctDemandInflated2025_26 * collectionRate;
+            
+            const csvContent = `HARROW COUNCIL TAX INCOME FORECAST 2025-26
+Exported from Interactive Forecaster
+${new Date().toLocaleDateString()}
+
+INPUT ASSUMPTIONS
+Rate Increase,${rate.toFixed(2)}%
+Tax Base Growth,${base.toFixed(2)}%
+Collection Rate,${collection.toFixed(2)}%
+Inflation Rate,${inflation.toFixed(2)}%
+
+RESULTS
+2024-25 Actual Income,£${CT_2024_25.toFixed(3)}m
+2025-26 Base Case Forecast,£${ctIncomeBase.toFixed(3)}m
+Growth (Base Case),£${(ctIncomeBase - CT_2024_25).toFixed(3)}m (+${((ctIncomeBase / CT_2024_25 - 1) * 100).toFixed(2)}%)
+
+2025-26 Inflation-Adjusted Forecast,£${ctIncomeInflation.toFixed(3)}m
+Growth (Inflation-Adjusted),£${(ctIncomeInflation - CT_2024_25).toFixed(3)}m (+${((ctIncomeInflation / CT_2024_25 - 1) * 100).toFixed(2)}%)
+
+Inflation Adjustment Benefit,£${(ctIncomeInflation - ctIncomeBase).toFixed(3)}m`;
+            
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent));
+            element.setAttribute('download', 'CT_Forecast_2025-26.csv');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            
+            alert('Results exported to CSV file: CT_Forecast_2025-26.csv');
+        }
+        
+        // Initial calculation on load
+        window.addEventListener('load', calculateForecast);
+    </script>
+</body>
+</html>
